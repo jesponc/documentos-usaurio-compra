@@ -1,27 +1,27 @@
 const models = require('../models/index');
 const errors = require('../config/error.js');
-
+const Response = require('./utilities/response.js');
+const error = require('../config/error.js');
 module.exports = {
 
   listar: async (req, res) => {
       const users = await models.usuario.findAll()
-      res.json({
-        succes: true,
-        data: {
-          usuarios: users
-        }
-      })
+
+      if(!users) return next(error.UsuarioInexistente)
+
+      const resp = Response.format(true, users);
+      
+      res.json(resp)
   },
 
   crear: async (req, res) => {
     try {
       const user = await models.usuario.create(req.body)
-      res.json({
-      sucess: true, 
-      data: {
-        id: user.id
-      }
-    })  
+      
+      const resp = Response.format(true, user);
+      
+      res.json(resp)
+
     } catch (error) {
       return next(errors.ErrorAlCrearUsuario)
     }
@@ -37,13 +37,11 @@ module.exports = {
         }
       })
       if(!user) return next(errors.UsuarioInexistente)
+      
+      const resp = Response.format(true, user);
+      
+      res.json(resp)
 
-      res.json({
-        succes: true,
-        data: {
-          usuario: user
-        }
-      })
     } catch (error) {
       return next(error)
     }
@@ -64,18 +62,10 @@ module.exports = {
       if (!user) return next(errors.UsuarioInexistente);
       
       await user.update(updateFields);
-  
-      user = await models.usuario.findOne({
-          where: {
-              id: req.params.idUsuario
-          }
-      });
-  
-      res.json({
-          success: true,
-          message: 'Usuario actualizado correctamente',
-          usuario: user
-      });
+      
+      const resp = Response.format(true, user);
+
+      res.json(resp);
   
   } catch (error) {
       return next(error);
@@ -90,13 +80,12 @@ module.exports = {
         }
       })
       if(!user)  return next(errors.UsuarioInexistente)
+      
       user.destroy()
-      res.json({
-        succes: true,
-        data: {
-          message: "Se ha eliminado el usuario correctamenre", 
-        }
-      })
+      
+      const resp = Response.format(true);
+      
+      res.json(resp)
     } catch (error) {
       return next(error)
     }

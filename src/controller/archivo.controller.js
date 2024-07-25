@@ -1,5 +1,6 @@
 const models = require('../models/index');
 const error = require('../config/error');
+const Response =  require('./utilities/response')
 
 module.exports = {
     uploadFile: async (req, res, next) => {
@@ -12,11 +13,9 @@ module.exports = {
                 nombre_original: req.file.originalname
             })
             if (!archivo) return next(error.ArchivoInexistente)
-
-            res.json({ 
-                success: true,
-                data: req.file
-             })
+            
+            const resp = Response.format(true, req.file)
+            res.json(resp)
 
         } catch (error) {
             console.log(error.message);

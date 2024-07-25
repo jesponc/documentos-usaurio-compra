@@ -1,7 +1,7 @@
-const { where } = require('sequelize');
 const error = require('../config/error');
 const models = require('../models/index');
-const usuario = require('../models/usuario');
+const Response =  require('./utilities/response')
+
 
 module.exports = {
     
@@ -14,14 +14,14 @@ module.exports = {
             })
             if (buscarCompra) return next(error.ServicioProductoExistente)
             
-            const compra = await models.compra.create(req.body)
-    
             if(!compra) return next(error.ErrorAlCrearCompra)
             
-            res.json({
-                success: true,
-                data: {compra}
-            })
+            const compra = await models.compra.create(req.body)
+            
+            const resp = Response.format(true, compra)   
+
+            res.json(resp)
+
         } catch (err) {
             return next(err)
         }    
@@ -50,10 +50,9 @@ module.exports = {
                     }
                 })
 
-                return res.json({
-                    success: true,
-                    data: {compra}
-                })
+                const resp = Response.format(true, compra)
+                
+                return res.json(resp)
             }
 
         } catch (err) {
@@ -84,11 +83,11 @@ module.exports = {
                     id : req.params.id
                 }
             })
-    
-            res.json({
-                success: true,
-                data: {compra}
-            })
+            
+            const resp = Response.format(true, compra)
+
+            res.json(resp)
+            
         } catch (err) {
             return next(err)
         }
@@ -104,13 +103,11 @@ module.exports = {
             })
             
             if(!usuario) return next(error.UsuarioInexistente)
+            
+            const resp = Response.format(true, usuario)
 
-            res.json({
-                success: true,
-                data : {
-                    usuario
-                }
-            })
+            res.json(resp)
+
         } catch (err) {
             return next(err)
         }
@@ -128,13 +125,10 @@ module.exports = {
             })
             
             if (!usuario) return next(error.UsuarioInexistente)
-    
-            res.json({
-            success: true,
-            data : {
-                usuario
-            }
-            })
+                
+            const resp = Response.format(true, usuario)
+            
+            res.json(resp)
             
         } catch (err) {
             return next(err)
