@@ -4,6 +4,7 @@ const Response = require('./utilities/response.js');
 const error = require('../config/error.js');
 module.exports = {
 
+
   listar: async (req, res) => {
       const users = await models.usuario.findAll()
 
@@ -36,6 +37,7 @@ module.exports = {
           id: req.params.idUsuario
         }
       })
+
       if(!user) return next(errors.UsuarioInexistente)
       
       const resp = Response.format(true, user);
